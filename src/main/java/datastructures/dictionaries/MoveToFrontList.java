@@ -3,8 +3,10 @@ package datastructures.dictionaries;
 import cse332.datastructures.containers.Item;
 import cse332.exceptions.NotYetImplementedException;
 import cse332.interfaces.misc.DeletelessDictionary;
+import cse332.interfaces.misc.SimpleIterator;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * 1. The list is typically not sorted.
@@ -20,18 +22,85 @@ import java.util.Iterator;
  * dictionary/list's iterator.
  */
 public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
+    private FrontList front;
+
+    private class FrontList {
+        private Item<K, V> data;
+        private FrontList next;
+        public FrontList(Item<K, V> item) {
+            this(item, null);
+        }
+
+        public FrontList(Item<K, V> item, FrontList next) {
+            this.data = item;
+            this.next = next;
+        }
+    }
     @Override
     public V insert(K key, V value) {
-        throw new NotYetImplementedException();
+        if (key == null || value == null) {
+            throw new IllegalArgumentException();
+        }
+        V prev = this.find(key);
+        if (prev != null) {
+            this.front.data.value = value;
+        } else {
+            this.front = new FrontList(new Item(key, value), this.front);
+            this.size++;
+        }
+        return prev;
     }
 
     @Override
     public V find(K key) {
-        throw new NotYetImplementedException();
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        FrontList current = this.front;
+        V returnValue = null;
+        if (current != null && current.data != null) {
+            if (current.data.key.equals(key)) {
+                return current.data.value;
+            }
+            while (current.next != null && current.next.data != null &&
+                    !current.next.data.key.equals(key)) {
+                current = current.next;
+            }
+            if (current.next != null && current.next.data != null) {
+                returnValue = current.next.data.value;
+                FrontList temp = current.next;
+                current.next = temp.next;
+                temp.next = this.front;
+                this.front = temp;
+            }
+        }
+        return returnValue;
     }
 
     @Override
     public Iterator<Item<K, V>> iterator() {
-        throw new NotYetImplementedException();
+        return new ListIterator();
+    }
+
+    private class ListIterator extends SimpleIterator<Item<K, V>> {
+        private FrontList current;
+
+        public ListIterator() {
+            this.current = MoveToFrontList.this.front;
+        }
+
+        public boolean hasNext() {
+            return current != null && current.next != null;
+        }
+
+        public Item<K, V> next() {
+            if(!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            Item<K, V> returnItem = current.data;
+            this.current = current.next;
+            return returnItem;
+        }
+
     }
 }

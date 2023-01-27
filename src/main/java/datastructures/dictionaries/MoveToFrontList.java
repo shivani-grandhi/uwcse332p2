@@ -35,6 +35,18 @@ public class MoveToFrontList<K, V> extends DeletelessDictionary<K, V> {
             this.next = next;
         }
     }
+    public MoveToFrontList(Item<K, V> item) {
+        this.front = new FrontList(item);
+        if (item == null) {
+            this.size = 0;
+        } else {
+            this.size = 1;
+        }
+    }
+    public MoveToFrontList() {
+        this(null);
+    }
+
     @Override
     public V insert(K key, V value) {
         if (key == null || value == null) {

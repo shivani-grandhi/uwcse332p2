@@ -86,31 +86,42 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
 
     @Override
     public int compareTo(FixedSizeFIFOWorkList<E> other) {
-        // You will implement this method in project 2. Leave this method unchanged for project 1.
-        throw new NotYetImplementedException();
+        int minLength = Math.min(this.size(), other.size());
+        int compare = 0;
+        for (int i = 0; i < minLength; i++) {
+            compare = this.peek(i).compareTo(other.peek(i));
+            if (compare != 0) {
+                return compare;
+            }
+        }
+
+        return this.size() - other.size();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
-        // You will finish implementing this method in project 2. Leave this method unchanged for project 1.
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof FixedSizeFIFOWorkList<?>)) {
+        }
+        else if (!(obj instanceof FixedSizeFIFOWorkList<?>)) {
             return false;
         } else {
-            // Uncomment the line below for p2 when you implement equals
-            // FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
-
-            // Your code goes here
-
-            throw new NotYetImplementedException();
+            FixedSizeFIFOWorkList<E> other = (FixedSizeFIFOWorkList<E>) obj;
+            if (other.size() != this.size()) {
+                return false;
+            } else {
+                return (this.compareTo(other) == 0);
+            }
         }
     }
 
     @Override
     public int hashCode() {
-        // You will implement this method in project 2. Leave this method unchanged for project 1.
-        throw new NotYetImplementedException();
+        int hashCode = 0;
+        for(int i = 0; i < this.size; i ++) {
+            hashCode += array[(front + i) % array.length].hashCode() * (this.front + i);
+        }
+        return hashCode * (this.size - this.front);
     }
 }

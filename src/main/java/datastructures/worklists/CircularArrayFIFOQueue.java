@@ -12,7 +12,7 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
     private int front;
     private int end;
     private int size;
-    private E[] array;
+    private final E[] array;
     public CircularArrayFIFOQueue(int capacity) {
         super(capacity);
         this.front = 0;
@@ -86,7 +86,7 @@ public class CircularArrayFIFOQueue<E extends Comparable<E>> extends FixedSizeFI
     @Override
     public int compareTo(FixedSizeFIFOWorkList<E> other) {
         int minLength = Math.min(this.size(), other.size());
-        int compare = 0;
+        int compare;
         for (int i = 0; i < minLength; i++) {
             compare = this.peek(i).compareTo(other.peek(i));
             if (compare != 0) {

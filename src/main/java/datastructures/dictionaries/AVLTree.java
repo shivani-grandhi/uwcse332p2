@@ -1,7 +1,6 @@
 package datastructures.dictionaries;
 
 import cse332.datastructures.trees.BinarySearchTree;
-
 /**
  * AVLTree must be a subclass of BinarySearchTree<E> and must use
  * inheritance and calls to superclass methods to avoid unnecessary
@@ -27,5 +26,99 @@ import cse332.datastructures.trees.BinarySearchTree;
  */
 
 public class AVLTree<K extends Comparable<? super K>, V> extends BinarySearchTree<K, V> {
-    // TODO: Implement me!
+    private class AVLNode extends BSTNode {
+        private int height;
+
+        public AVLNode(K key, V value) {
+            super(key, value);
+            this.height = 0;
+        }
+    }
+
+    public AVLTree() {
+        super();
+    }
+
+    @Override
+    public V insert(K key, V value) {
+        if (key == null || value == null) {
+            throw new IllegalArgumentException();
+        }
+
+        V oldVal = find(key);
+        this.root = insHelper((AVLNode)this.root, key, value);
+        return oldVal;
+    }
+
+    private AVLNode insHelper(AVLNode node, K key, V value) {
+        if (node == null) {
+            this.size++;
+            return new AVLNode(key, value);
+        }
+        int direction = Integer.signum(key.compareTo(node.key));
+        if (direction < 0) {
+            node.children[0] = insHelper((AVLNode)node.children[0], key, value);
+        } else if (direction > 0) {
+            node.children[1] = insHelper((AVLNode)node.children[1], key, value);
+        } else {
+            node.value = value;
+        }
+        return balance(node);
+    }
+
+    private AVLNode balance(AVLNode node) {
+        if(node == null) {
+            return node;
+        }
+        if(heightDifference(node)> 1) {
+            if (heightDifference((AVLNode)node.children[0])>0) {
+                node = rotateLeft(node);
+            } else {
+                node = doubleWithL(node);
+            }
+        } else if(heightDifference(node) < -1) {
+            if (heightDifference((AVLNode)node.children[1]) < 0) {
+                node = rotateRight(node);
+            } else {
+                node = doubleWithR(node);
+            }
+        }
+        node.height = Math.max(height((AVLNode)node.children[0]),height((AVLNode)node.children[1]))+1;
+        return node;
+    }
+    private int heightDifference(BSTNode node) {
+        return height((AVLNode)node.children[0]) - height((AVLNode)node.children[1]);
+    }
+
+    private AVLNode rotateRight(AVLNode node) {
+        AVLNode temp = (AVLNode)node.children[1];
+        node.children[1] = temp.children[0];
+        temp.children[0] = node;
+        node.height = Math.max(height((AVLNode)node.children[0]),height((AVLNode)node.children[1]))+1;
+        temp.height = Math.max(height((AVLNode)temp.children[1]),height(node))+1;
+        return temp;
+    }
+    private AVLNode rotateLeft(AVLNode node) {
+        AVLNode temp = (AVLNode)node.children[0];
+        node.children[0] = temp.children[1];
+        temp.children[1] = node;
+        node.height = Math.max(height((AVLNode)node.children[0]),height((AVLNode)node.children[1]))+1;
+        temp.height = Math.max(height((AVLNode)temp.children[0]),height(node))+1;
+        return temp;
+    }
+
+    private int height(AVLNode node) {
+        if(node == null) {
+            return -1;
+        }
+        return node.height;
+    }
+    private AVLNode doubleWithL(AVLNode node) {
+        node.children[0] = rotateRight((AVLNode)node.children[0]);
+        return rotateLeft(node);
+    }
+    private AVLNode doubleWithR(AVLNode node) {
+        node.children[1] = rotateLeft((AVLNode)node.children[1]);
+        return rotateRight(node);
+    }
 }

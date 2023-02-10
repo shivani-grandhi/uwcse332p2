@@ -101,49 +101,11 @@ public class HashTrieMap<A extends Comparable<A>, K extends BString<A>, V> exten
 
     @Override
     public void delete(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException();
-        }
-        HashTrieNode temp = (HashTrieNode)this.root;
-
-        Iterator<A> itr = key.iterator();
-        A temp2 = null;
-
-        HashTrieNode node = (HashTrieNode)this.root;
-
-        while (itr.hasNext()) {
-            A next = itr.next();
-
-            if (node == null) {
-                return;
-            }
-
-            if (node.value != null || node.pointers.size() >= 2) {
-                temp = node;
-                temp2 = next;
-            }
-
-            if (node.pointers.size() != 0) {
-                node = node.pointers.get(next);
-            } else {
-                return;
-            }
-        }
-        if (node != null && node.value != null) {
-            if (node.pointers.size() != 0) {
-                node.value = null;
-            } else if (temp2 != null) {
-                temp.pointers.remove(temp2);
-            }
-            node.value = null;
-
-            this.size--;
-        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear() {
-        this.size = 0;
-        this.root = new HashTrieNode();
+        throw new UnsupportedOperationException();
     }
 }

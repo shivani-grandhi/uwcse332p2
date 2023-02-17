@@ -19,21 +19,19 @@ public class TopKSort {
             k = array.length;
         }
         MinFourHeap<E> sorted = new MinFourHeap<E>(comparator);
-        for (int i = 0; i < Math.min(k, array.length); i++) {
+        for (int i = 0; i < k; i++) {
             sorted.add(array[i]);
         }
-        for (E e : array) {
-            if (comparator.compare(e, sorted.peek()) > 0) {
-                sorted.add(e);
+        for (int j = k; j < array.length; j++) {
+            if (comparator.compare(array[j], sorted.peek()) > 0) {
                 sorted.next();
+                sorted.add(array[j]);
             }
+            array[j] = null;
+
         }
-        for (int i = 0; i < array.length; i++) {
-            if (i < k) {
-                array[i] = sorted.next();
-            } else {
-                array[i] = null;
-            }
+        for (int p = 0; p < k; p++) {
+            array[p] = sorted.next();
         }
     }
 }

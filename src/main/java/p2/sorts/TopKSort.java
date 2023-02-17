@@ -2,6 +2,8 @@ package p2.sorts;
 
 
 
+import datastructures.worklists.MinFourHeap;
+
 import java.util.Comparator;
 
 public class TopKSort {
@@ -14,13 +16,22 @@ public class TopKSort {
      */
     public static <E> void sort(E[] array, int k, Comparator<E> comparator) {
         if (array.length < k) {
-            HeapSort.sort(array, comparator);
-            return;
+            k = array.length;
         }
-        QuickSort.sort(array,comparator);
-
+        MinFourHeap<E> sorted = new MinFourHeap<E>(comparator);
         for (int i = 0; i < k; i++) {
-            array[i] = array[array.length-k+i];
+            sorted.add(array[i]);
+        }
+        for (int j = k; j < array.length; j++) {
+            if (comparator.compare(array[j], sorted.peek()) > 0) {
+                sorted.next();
+                sorted.add(array[j]);
+            }
+            array[j] = null;
+
+        }
+        for (int p = 0; p < k; p++) {
+            array[p] = sorted.next();
         }
     }
 }

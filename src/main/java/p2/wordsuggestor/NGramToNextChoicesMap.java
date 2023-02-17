@@ -7,6 +7,7 @@ import cse332.misc.LargeValueFirstItemComparator;
 import cse332.sorts.InsertionSort;
 import cse332.types.AlphabeticString;
 import cse332.types.NGram;
+import p2.sorts.TopKSort;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -76,7 +77,9 @@ public class NGramToNextChoicesMap {
             InsertionSort.sort(afterNGrams, comp);
         } else {
             // You must fix this line toward the end of the project
-            throw new NotYetImplementedException();
+            //throw new NotYetImplementedException();
+            TopKSort.sort(afterNGrams, k, comp.reversed());
+            afterNGrams = reverseArray(afterNGrams, k);
         }
 
         String[] nextWords = new String[k < 0 ? afterNGrams.length : k];
@@ -85,6 +88,13 @@ public class NGramToNextChoicesMap {
             nextWords[l] = afterNGrams[l].key;
         }
         return nextWords;
+    }
+    private static Item<String, Integer>[] reverseArray(Item<String, Integer>[] arr, int k) {
+        Item<String, Integer>[] result = (Item<String, Integer>[]) new Item[arr.length];
+        for(int i = 0; i < Math.min(k, arr.length); i++) {
+            result[i] =  arr[Math.min(k, arr.length)-1-i];
+        }
+        return result;
     }
 
     @Override
